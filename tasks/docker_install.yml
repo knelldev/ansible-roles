@@ -1,0 +1,75 @@
+---
+# tasks file for docker_install
+# simple docker installation part
+- name: (docker) check if already installed
+  raw: test -e /usr/bin/docker && echo "true" || echo "false"
+  changed_when: "'true' not in output.stdout"
+  changed_when: false
+  failed_when: false
+
+- name: (docker) new docker installation block
+  block:
+  - name: (docker) download get-docker.sh
+    get_url:
+      url: https://get.docker.com/
+      dest: /tmp/get-docker.sh
+      mode: 0700
+
+  - name: (docker) execute get-docker.sh
+    shell: "/tmp/get-docker.sh"
+
+  - name: (docker) remove get-docker.sh
+    file:
+      path: /tmp/get-docker.sh
+      state: absent
+  when: "'true' not in output.stdout"
+
+- name: (docker) change/check docker package state
+  ansible.builtin.package:
+    name: "{{ docker_package }}"
+    state: "{{ docker_package_state }}"
+    when: "'false' not in output.stdout"
+
+# simple docker_compose part
+- name: (docker_compose) installation block
+  block: 
+  - name: (docker_compose) grab latest release
+    uri:
+      url: https://api.github.com/repos/docker/compose/tags
+      return_content: yes
+      validate_certs: no
+    register: docker_compose_version_latest
+    when: docker_compose_version == "latest"
+
+  - name:  (docker_compose) extract latest docker_compose version
+    set_fact:
+      docker_compose_version_tmp: "{{ (docker_compose_version_latest.json | first).name }}"
+    when: docker_compose_version == "latest"
+
+  - name:  (docker_compose) set version
+    set_fact:
+      docker_compose_version_tmp: "{{ docker_compose_version }}"
+    when: docker_compose_version != "latest"
+
+  - name: (docker_compose) check current version
+    command: "{{ docker_compose_path  }}/docker-compose --version"
+    register: docker_compose_installed
+    ignore_errors: yes
+    changed_when: false
+    failed_when: false
+
+  - name: (docker_compose) download docker_compose
+    get_url:
+      url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version_tmp }}/docker-compose-Linux-x86_64"
+      dest: "{{ docker_compose_path }}/docker-compose"
+      mode: '755'
+    when: docker_compose_version_tmp not in docker_compose_installed.stdout | default('')
+  when: docker_compose_install
+
+# simple docker pip part
+- name: (docker_pip) installing pip block
+  block:
+  - name: "(pip) install pip package docker"
+    pip:
+      name: "docker"
+  when: docker_pip_install

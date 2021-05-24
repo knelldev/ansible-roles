@@ -1,5 +1,5 @@
 galaxy_info:
-  author: Lukas Menzel
+  author: knelldev
   description: Docker install and configuration for Linux
   company: knelldev
 
@@ -7,18 +7,14 @@ galaxy_info:
 
   license: license (MIT)
 
-  min_ansible_version: 1.2
+  min_ansible_version: 2.9
   platforms:
   - name: Debian
     versions:
-      - wheezy
-      - jessie
       - stretch
       - buster
   - name: Ubuntu
     versions:
-      - precise
-      - trusty
       - xenial
       - bionic
       - focal
