@@ -13,6 +13,6 @@
   include: "{{ item }}"
   with_first_found:
     - files:
-      - "{{ role_name | lower }}"
+      - "{{ role_name | lower }}.yml"
       skip: true
   become: yes 
