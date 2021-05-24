@@ -75,4 +75,5 @@
   - name: "(pip) install pip package docker"
     pip:
       name: "docker"
+      executable: {{ pip_executable }} 
   when: docker_pip_install

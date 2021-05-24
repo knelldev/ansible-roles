@@ -1,5 +1,8 @@
 ---
 # defaults file for docker_install
+# global settings
+pip_executable: pip3
+
 
 # State of the docker package. Valid values: absent, present or latest
 docker_package_state: present
@@ -8,7 +11,7 @@ docker_package_state: present
 docker_pip_install: true # Will install the "docker" pip package
 
 # docker_compose settings
-docker_install_compose: true
+docker_compose_install: true
 docker_compose_version: latest
 
 # A list of users who will be added to the docker group.
