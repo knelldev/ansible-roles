@@ -1,4 +1,7 @@
 ---
+- debug: 
+  msg: test
+
 # tasks file for docker_install
 # simple docker installation part
 - name: (docker) check if already installed
@@ -25,10 +28,10 @@
   when: "'true' not in output.stdout"
 
 - name: (docker) change/check docker package state
-  ansible.builtin.package:
+  package:
     name: "{{ docker_package }}"
     state: "{{ docker_package_state }}"
-    when: "'false' not in output.stdout"
+  when: "'false' not in output.stdout"
 
 # simple docker_compose part
 - name: (docker_compose) installation block

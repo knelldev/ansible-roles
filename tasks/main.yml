@@ -9,10 +9,16 @@
       - "{{ ansible_os_family | lower }}.yml"
       skip: true
 
+- name: (main) find tasks to run
+  find:
+    paths: "{{ role_path }}/tasks"
+    use_regex: yes
+    patterns:
+      - '^[0-9]{1,2}.*\.yml'
+  register: task_result
+  delegate_to: localhost
+
 - name: (main) include tasks
-  include: "{{ item }}"
-  with_first_found:
-    - files:
-      - "{{ role_name | lower }}.yml"
-      skip: true
+  include: "{{ item.path }}"
+  loop: "{{ task_result.files | sort }}"
   become: yes 
