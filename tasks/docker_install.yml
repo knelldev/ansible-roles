@@ -3,9 +3,9 @@
 # simple docker installation part
 - name: (docker) check if already installed
   raw: test -e /usr/bin/docker && echo "true" || echo "false"
-  changed_when: "'true' not in output.stdout"
   changed_when: false
   failed_when: false
+  register: output
 
 - name: (docker) new docker installation block
   block:
@@ -33,7 +33,7 @@
 # simple docker_compose part
 - name: (docker_compose) installation block
   block: 
-  - name: (docker_compose) grab latest release
+  - name: (docker_compose) get latest release
     uri:
       url: https://api.github.com/repos/docker/compose/tags
       return_content: yes
