@@ -1,7 +1,4 @@
 ---
-- debug: 
-  msg: test
-
 # tasks file for docker_install
 # simple docker installation part
 - name: (docker) check if already installed
@@ -75,5 +72,5 @@
   - name: "(pip) install pip package docker"
     pip:
       name: "docker"
-      executable: {{ pip_executable }} 
+      executable: {{ general_pip_executable }} 
   when: docker_pip_install

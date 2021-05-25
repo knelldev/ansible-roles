@@ -1,0 +1,22 @@
+---
+- name: (docker-config) prepare folders
+  file:
+    path: "{{ item }}"
+    state: directory
+    # mode: 0755
+  with_items: 
+    - "/etc/docker"
+
+- name: (docker-config) template daemon.json
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { src: daemon.json.j2, dest: "/etc/docker/daemon.json" }
+
+- name: (docker-config) restart docker
+  systemd:
+    name: docker 
+    state: restarted
+    enabled: true
+    daemon_reload: yes
